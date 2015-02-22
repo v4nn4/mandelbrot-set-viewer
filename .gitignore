@@ -7,9 +7,11 @@
 *.obj
 *.ilk
 *.pdb
+*.log
 
 # Visual Studio
 *.opensdf
 *.sdf
 *.suo
 *.filters
+*.user
