@@ -1,5 +1,15 @@
+# Directories
+.bin
+
+# Build
 *.exe
 *.dll
 *.obj
 *.ilk
 *.pdb
+
+# Visual Studio
+*.opensdf
+*.sdf
+*.suo
+*.filters
