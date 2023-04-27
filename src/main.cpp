@@ -236,7 +236,7 @@ WinMain(HINSTANCE hInstance,
   WindowClass.style = CS_HREDRAW | CS_VREDRAW;
   WindowClass.lpfnWndProc = Win32MainWindowCallback;
   WindowClass.hInstance = hInstance;
-  WindowClass.lpszClassName = "MandelbrotViewerWindowClass";
+  WindowClass.lpszClassName = "MandelbrotSetViewerWindowClass";
 
   if (RegisterClass(&WindowClass))
   {
@@ -244,7 +244,7 @@ WinMain(HINSTANCE hInstance,
       CreateWindowEx(
         0,
         WindowClass.lpszClassName,
-        "MandelbrotViewer",
+        "MandelbrotSetViewer",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
