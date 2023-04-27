@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <stdint.h>
 #include <xinput.h>
-#include "mandelbrot.hpp"
-#include "coordinates.hpp"
+#include <msv/engine/Mandelbrot.h>
+#include <msv/engine/Coordinates.h>
 
 #define internal static
 #define local_persist static
@@ -20,7 +20,7 @@ struct win32_offscreen_buffer
 
 global_variable bool Running;
 global_variable win32_offscreen_buffer GlobalBackBuffer;
-global_variable CoordinateSystem globalCoordinateSystem = {-0.5,0,3,2};
+global_variable msv::CoordinateSystem globalCoordinateSystem = {-0.5,0,3,2};
 
 struct win32_window_dimension
 {
@@ -53,8 +53,8 @@ DrawMandelbrot(win32_offscreen_buffer* Buffer, int /*BlueOffset*/, int /*GreenOf
 		{
 			x = static_cast<double>(X)/Buffer->Width;
 			y = static_cast<double>(Y)/Buffer->Height;
-			CoordinateSystemHelper::TransformInplace(globalCoordinateSystem, x, y);
-			m = MandelbrotHelper::ComputeMandelbrotRadius(x, y);
+			msv::CoordinateSystemHelper::TransformInplace(globalCoordinateSystem, x, y);
+			m = msv::MandelbrotHelper::ComputeMandelbrotRadius(x, y);
 			if(m<=4)
 			{
 				Blue = static_cast<uint8_t>(100)*m;
@@ -163,7 +163,7 @@ Win32MainWindowCallback(HWND Window,
 				{
 					if(IsDown && !WasDown)
 					{
-						CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, 0.01);
+						msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, 0.01);
   						TranslateBackBuffer(&GlobalBackBuffer,0,1);
 					}
 				} break;
@@ -171,7 +171,7 @@ Win32MainWindowCallback(HWND Window,
 				{
 					if(IsDown && !WasDown)
 					{
-						CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, -0.01);
+						msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, -0.01);
   						TranslateBackBuffer(&GlobalBackBuffer,0,-1);
 					}
 					//
@@ -180,7 +180,7 @@ Win32MainWindowCallback(HWND Window,
 				{
 					if(IsDown && !WasDown)
 					{
-						CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, 0);
+						msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, 0);
 						TranslateBackBuffer(&GlobalBackBuffer,1,0);
 					}
 					//
@@ -189,7 +189,7 @@ Win32MainWindowCallback(HWND Window,
 				{
 					if(IsDown && !WasDown)
 					{
-						CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, 0);
+						msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, 0);
   						TranslateBackBuffer(&GlobalBackBuffer,-1,0);
 					}
 					//
@@ -198,7 +198,7 @@ Win32MainWindowCallback(HWND Window,
 				{
 					if(IsDown && !WasDown)
 					{
-						CoordinateSystemHelper::ZoomCoordinateSystem(globalCoordinateSystem, 1.5);
+						msv::CoordinateSystemHelper::ZoomCoordinateSystem(globalCoordinateSystem, 1.5);
 					}
 				} break;
 			}
@@ -207,10 +207,10 @@ Win32MainWindowCallback(HWND Window,
 		{
 			PAINTSTRUCT Paint;
 			auto DeviceContext = BeginPaint(Window,&Paint);
-			/*int X = Paint.rcPaint.left;
+			int X = Paint.rcPaint.left;
 			int Y = Paint.rcPaint.top;
 			int Width = Paint.rcPaint.right - Paint.rcPaint.left;
-			int Height = Paint.rcPaint.bottom - Paint.rcPaint.top;*/
+			int Height = Paint.rcPaint.bottom - Paint.rcPaint.top;
 			auto Dimension = GetWindowDimension(Window);
 			Win32DisplayBufferInWindow(DeviceContext,Dimension.Width,Dimension.Height,GlobalBackBuffer);
 			EndPaint(Window,&Paint);
@@ -282,52 +282,52 @@ int /*nCmdShow*/)
 						case XINPUT_GAMEPAD_DPAD_UP:
 						{
 							// Translate by 1 px
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, 0.01);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, 0.01);
 							TranslateBackBuffer(&GlobalBackBuffer, 0, 1);
 						} break;
 						case XINPUT_GAMEPAD_DPAD_DOWN:
 						{
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, -0.01);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0, -0.01);
 							TranslateBackBuffer(&GlobalBackBuffer, 0, -1);
 						} break;
 						case XINPUT_GAMEPAD_DPAD_UP | XINPUT_GAMEPAD_DPAD_LEFT:
 						{
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, 0.01);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, 0.01);
 							TranslateBackBuffer(&GlobalBackBuffer, 1, 1);
 						} break;
 						case XINPUT_GAMEPAD_DPAD_UP | XINPUT_GAMEPAD_DPAD_RIGHT:
 						{
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, 0.01);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, 0.01);
 							TranslateBackBuffer(&GlobalBackBuffer, -1, 1);
 						} break;
 						case XINPUT_GAMEPAD_DPAD_DOWN | XINPUT_GAMEPAD_DPAD_LEFT:
 						{
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, -0.01);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, -0.01);
 							TranslateBackBuffer(&GlobalBackBuffer, 1, -1);
 						} break;
 						case XINPUT_GAMEPAD_DPAD_DOWN | XINPUT_GAMEPAD_DPAD_RIGHT:
 						{
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, -0.01);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, -0.01);
 							TranslateBackBuffer(&GlobalBackBuffer, -1, -1);
 						} break;
 						case XINPUT_GAMEPAD_DPAD_LEFT:
 						{
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, 0);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, 0.01, 0);
 							TranslateBackBuffer(&GlobalBackBuffer, 1, 0);
 						} break;
 						case XINPUT_GAMEPAD_DPAD_RIGHT:
 						{
-							CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, 0);
+							msv::CoordinateSystemHelper::TranslateCoordinateSystem(globalCoordinateSystem, -0.01, 0);
 							TranslateBackBuffer(&GlobalBackBuffer, -1, 0);
 						} break;
 						case XINPUT_GAMEPAD_A:
 						{
-							CoordinateSystemHelper::ZoomCoordinateSystem(globalCoordinateSystem, 1.5);
+							msv::CoordinateSystemHelper::ZoomCoordinateSystem(globalCoordinateSystem, 1.5);
 							DrawMandelbrot(&GlobalBackBuffer, XOffset, YOffset);
 						} break;
 						case XINPUT_GAMEPAD_B:
 						{
-							CoordinateSystemHelper::ZoomCoordinateSystem(globalCoordinateSystem, 0.5);
+							msv::CoordinateSystemHelper::ZoomCoordinateSystem(globalCoordinateSystem, 0.5);
 							DrawMandelbrot(&GlobalBackBuffer, XOffset, YOffset);
 						} break;
 						}

@@ -1,5 +1,5 @@
 # Directories
-.bin
+.build
 
 # Build
 *.exe
