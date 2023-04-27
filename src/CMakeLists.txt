@@ -2,7 +2,7 @@ add_subdirectory(engine)
 add_executable(main WIN32 main.cpp)
 target_link_libraries(main PRIVATE msv-engine)
 
-set_target_properties(main PROPERTIES LINKER_LANGUAGE C)
+set_target_properties(main PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(main PUBLIC
     user32
     gdi32
